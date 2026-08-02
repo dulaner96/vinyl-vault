@@ -39,7 +39,7 @@
           onclick="switchTab('single')"
           class="flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 bg-amber-500 text-slate-950 shadow"
         >
-          + Add Single Record
+          + Add Single
         </button>
         <button 
           id="tab-bulk" 
@@ -47,7 +47,15 @@
           onclick="switchTab('bulk')"
           class="flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
         >
-          ⚡ Bulk Import Tool
+          ⚡ Bulk Text
+        </button>
+        <button 
+          id="tab-paste" 
+          type="button" 
+          onclick="switchTab('paste')"
+          class="flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+        >
+          📋 Paste Cells
         </button>
       </div>
 
@@ -185,25 +193,24 @@
             <li><code class="text-slate-200">Artist - Album Title</code></li>
             <li><code class="text-slate-200">Album Title - Artist (1977)</code></li>
             <li><code class="text-slate-200">Artist, Album Title, Format, Year</code></li>
-            <li><code class="text-slate-200">Album Title, Artist</code></li>
           </ul>
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-            Paste PDF Text / List Here
+            Paste List Here
           </label>
           <textarea 
             id="bulk-text-input" 
-            rows="8" 
-            placeholder="Fleetwood Mac - Rumours&#10;Pink Floyd - Dark Side of the Moon (1973)&#10;Miles Davis - Kind of Blue, 12&quot; LP, 1959&#10;The Beatles - Abbey Road"
+            rows="6" 
+            placeholder="Fleetwood Mac - Rumours&#10;Pink Floyd - Dark Side of the Moon (1973)"
             class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-amber-500 transition leading-relaxed"
           ></textarea>
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-            Default Format for Items Without Format Specified
+            Default Format
           </label>
           <select 
             id="bulk-default-format" 
@@ -225,6 +232,37 @@
         </button>
 
         <div id="bulk-feedback" class="hidden p-3 rounded-lg text-xs font-medium border text-center"></div>
+      </div>
+
+      <!-- Spreadsheet Paste Panel -->
+      <div id="panel-paste" class="hidden bg-slate-800/60 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold text-slate-200 flex items-center gap-2">
+            <span>📋</span> Spreadsheet Cells Paste
+          </h2>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Highlight rows directly in Excel or Google Sheets, copy them, and paste below:
+          </p>
+        </div>
+
+        <div>
+          <textarea 
+            id="spreadsheetPasteBox" 
+            rows="6" 
+            placeholder="Artist	Title	Catalog Number	Format..."
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-amber-500 transition leading-relaxed"
+          ></textarea>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="processSpreadsheetPaste()"
+          class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-4 rounded-lg text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+        >
+          <span>📥</span> Import Pasted Spreadsheet Rows
+        </button>
+
+        <div id="paste-feedback" class="hidden p-3 rounded-lg text-xs font-medium border text-center"></div>
       </div>
 
     </section>
@@ -258,7 +296,7 @@
 
       <div id="empty-state" class="text-center py-12 border-2 border-dashed border-slate-800 rounded-2xl">
         <p class="text-slate-500 text-sm">No records added yet.</p>
-        <p class="text-xs text-slate-600 mt-1">Use the form or Bulk Import tool on the left to populate your vault!</p>
+        <p class="text-xs text-slate-600 mt-1">Use the form or import tools on the left to populate your vault!</p>
       </div>
     </section>
 
@@ -336,19 +374,26 @@
     function switchTab(tab) {
       const btnSingle = document.getElementById('tab-single');
       const btnBulk = document.getElementById('tab-bulk');
+      const btnPaste = document.getElementById('tab-paste');
       const panelSingle = document.getElementById('panel-single');
       const panelBulk = document.getElementById('panel-bulk');
+      const panelPaste = document.getElementById('panel-paste');
+
+      // Reset all buttons
+      [btnSingle, btnBulk, btnPaste].forEach(b => {
+        b.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50";
+      });
+      [panelSingle, panelBulk, panelPaste].forEach(p => p.classList.add('hidden'));
 
       if (tab === 'single') {
         btnSingle.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 bg-amber-500 text-slate-950 shadow";
-        btnBulk.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50";
         panelSingle.classList.remove('hidden');
-        panelBulk.classList.add('hidden');
-      } else {
+      } else if (tab === 'bulk') {
         btnBulk.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 bg-amber-500 text-slate-950 shadow";
-        btnSingle.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50";
         panelBulk.classList.remove('hidden');
-        panelSingle.classList.add('hidden');
+      } else if (tab === 'paste') {
+        btnPaste.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 bg-amber-500 text-slate-950 shadow";
+        panelPaste.classList.remove('hidden');
       }
     }
 
@@ -362,10 +407,11 @@
     function renderCollection() {
       const filterText = searchFilter.value.toLowerCase().trim();
       const filtered = records.filter(r => 
-        r.title.toLowerCase().includes(filterText) || 
-        r.artist.toLowerCase().includes(filterText) ||
+        (r.title && r.title.toLowerCase().includes(filterText)) || 
+        (r.artist && r.artist.toLowerCase().includes(filterText)) ||
         (r.format && r.format.toLowerCase().includes(filterText)) ||
-        (r.genre && r.genre.toLowerCase().includes(filterText))
+        (r.genre && r.genre.toLowerCase().includes(filterText)) ||
+        (r.catalog && r.catalog.toLowerCase().includes(filterText))
       );
 
       recordCount.textContent = `${records.length} Record${records.length === 1 ? '' : 's'}`;
@@ -464,10 +510,9 @@
     window.processBulkImport = function() {
       const rawText = document.getElementById('bulk-text-input').value;
       const defaultFormat = document.getElementById('bulk-default-format').value;
-      const feedback = document.getElementById('bulk-feedback');
 
       if (!rawText.trim()) {
-        showFeedback("Please paste or type text into the box above before importing.", "error");
+        showFeedback("bulk-feedback", "Please paste or type text into the box above before importing.", "error");
         return;
       }
 
@@ -484,7 +529,6 @@
         let format = defaultFormat;
         let catalog = '';
 
-        // Extract Year from parentheses if present e.g. "Title (1977)"
         let textWithoutYear = cleaned;
         const yearMatch = cleaned.match(/\((19\d\d|20\d\d)\)/);
         if (yearMatch) {
@@ -492,7 +536,6 @@
           textWithoutYear = cleaned.replace(yearMatch[0], '').trim();
         }
 
-        // Format detection
         if (/7"|7in|7 inch|45 rpm|45rpm|single/i.test(cleaned)) {
           format = '7" Single';
         } else if (/10"|10in|10 inch|ep/i.test(cleaned)) {
@@ -503,7 +546,6 @@
           format = '12" LP';
         }
 
-        // Delimiter parsing
         if (textWithoutYear.includes(' - ')) {
           const parts = textWithoutYear.split(' - ');
           artist = parts[0].trim();
@@ -521,16 +563,11 @@
               year = parts[2].trim();
             }
           }
-        } else if (textWithoutYear.includes('\t')) {
-          const parts = textWithoutYear.split('\t');
-          artist = parts[0].trim();
-          title = parts.slice(1).join(' ').trim();
         } else {
           title = textWithoutYear;
           artist = 'Various Artists';
         }
 
-        // Clean up quotes
         title = title.replace(/^["']|["']$/g, '').trim();
         artist = artist.replace(/^["']|["']$/g, '').trim();
 
@@ -552,14 +589,57 @@
         records = [...newItems, ...records];
         saveState();
         document.getElementById('bulk-text-input').value = '';
-        showFeedback(`Success! Imported ${newItems.length} records into your vault.`, "success");
+        showFeedback("bulk-feedback", `Success! Imported ${newItems.length} records into your vault.`, "success");
       } else {
-        showFeedback("Could not parse any valid records. Check the format and try again.", "error");
+        showFeedback("bulk-feedback", "Could not parse any valid records. Check the format and try again.", "error");
       }
     };
 
-    function showFeedback(msg, type) {
-      const feedback = document.getElementById('bulk-feedback');
+    // Spreadsheet Paste Import Logic
+    window.processSpreadsheetPaste = function() {
+      const text = document.getElementById('spreadsheetPasteBox').value.trim();
+      if (!text) {
+        showFeedback("paste-feedback", "Please paste spreadsheet rows into the box first.", "error");
+        return;
+      }
+
+      const lines = text.split('\n');
+      const newRecords = [];
+      let startIndex = 0;
+
+      const firstCols = lines[0].split(/\t|,/);
+      if (firstCols[0].toLowerCase().includes('artist') || firstCols[1]?.toLowerCase().includes('title')) {
+        startIndex = 1;
+      }
+
+      for (let i = startIndex; i < lines.length; i++) {
+        const cols = lines[i].split(/\t|,/).map(c => c.trim());
+        if (cols.length < 2) continue;
+
+        newRecords.push({
+          id: Date.now() + Math.random(),
+          artist: cols[0] || '',
+          title: cols[1] || '',
+          catalog: cols[2] || '',
+          format: cols[3] || '12" LP',
+          genre: cols[4] || '',
+          year: cols[5] || ''
+        });
+      }
+
+      if (newRecords.length === 0) {
+        showFeedback("paste-feedback", "No valid records found. Make sure columns are separated by tabs or commas.", "error");
+        return;
+      }
+
+      records = [...newRecords, ...records];
+      saveState();
+      document.getElementById('spreadsheetPasteBox').value = '';
+      showFeedback("paste-feedback", `Successfully imported ${newRecords.length} records!`, "success");
+    };
+
+    function showFeedback(elementId, msg, type) {
+      const feedback = document.getElementById(elementId);
       feedback.classList.remove('hidden', 'bg-emerald-950/50', 'text-emerald-400', 'border-emerald-800', 'bg-rose-950/50', 'text-rose-400', 'border-rose-800');
       
       if (type === 'success') {
@@ -664,59 +744,6 @@
 
     // Live Search Filter Listener
     searchFilter.addEventListener('input', renderCollection);
-<!-- Spreadsheet Paste Import Tool -->
-<div style="background:#1e293b; padding:15px; border-radius:10px; margin:15px 0; color:white;">
-  <label style="display:block; font-weight:bold; margin-bottom:6px;">Paste Spreadsheet Rows</label>
-  <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;">Copy rows directly from Excel or Google Sheets and paste them below:</p>
-  <textarea id="spreadsheetPasteBox" rows="4" placeholder="Artist	Title	Catalog Number..." style="width:100%; background:#0f172a; color:white; border:1px solid #475569; border-radius:5px; padding:8px; font-size:14px;"></textarea>
-  <button id="processPasteBtn" style="margin-top:8px; background:#4f46e5; color:white; border:none; padding:10px 16px; border-radius:5px; font-weight:bold; width:100%; cursor:pointer;">Import Pasted Records</button>
-</div>
-
-<script>
-document.getElementById('processPasteBtn')?.addEventListener('click', function() {
-  const text = document.getElementById('spreadsheetPasteBox').value.trim();
-  if (!text) {
-    alert('Please paste spreadsheet rows into the box first.');
-    return;
-  }
-
-  const lines = text.split('\n');
-  const newRecords = [];
-  let startIndex = 0;
-
-  // Check if the first line is a header row
-  const firstCols = lines[0].split(/\t|,/);
-  if (firstCols[0].toLowerCase().includes('artist') || firstCols[1]?.toLowerCase().includes('title')) {
-    startIndex = 1; // Skip header row
-  }
-
-  for (let i = startIndex; i < lines.length; i++) {
-    const cols = lines[i].split(/\t|,/).map(c => c.trim());
-    if (cols.length < 2) continue; // Skip blank or invalid lines
-
-    newRecords.push({
-      artist: cols[0] || '',
-      title: cols[1] || '',
-      catNum: cols[2] || '',
-      media: cols[3] || '',
-      sleeve: cols[4] || '',
-      speed: cols[5] || '33 RPM'
-    });
-  }
-
-  if (newRecords.length === 0) {
-    alert('No valid records found. Make sure columns are separated by tabs or commas.');
-    return;
-  }
-
-  const current = JSON.parse(localStorage.getItem('vinylCollection') || '[]');
-  const updated = [...current, ...newRecords];
-  localStorage.setItem('vinylCollection', JSON.stringify(updated));
-  
-  alert('Successfully imported ' + newRecords.length + ' records!');
-  location.reload();
-});
-</script>
 
     // Initial Render
     renderCollection();
