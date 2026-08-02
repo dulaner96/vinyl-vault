@@ -1,53 +1,163 @@
-<!-- Spreadsheet Paste Import Tool -->
-<div style="background:#1e293b; padding:15px; border-radius:10px; margin:15px 0; color:white;">
-  <label style="display:block; font-weight:bold; margin-bottom:6px;">Paste Spreadsheet Rows</label>
-  <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;">Copy rows directly from Excel or Google Sheets and paste them below:</p>
-  <textarea id="spreadsheetPasteBox" rows="4" placeholder="Artist	Title	Catalog Number..." style="width:100%; background:#0f172a; color:white; border:1px solid #475569; border-radius:5px; padding:8px; font-size:14px;"></textarea>
-  <button id="processPasteBtn" style="margin-top:8px; background:#4f46e5; color:white; border:none; padding:10px 16px; border-radius:5px; font-weight:bold; width:100%; cursor:pointer;">Import Pasted Records</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyl Vault</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0f172a; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 16px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h1 { font-size: 1.5rem; font-weight: bold; color: #ffffff; }
+        
+        /* Import Box */
+        .card { background: #1e293b; padding: 16px; border-radius: 12px; margin-bottom: 20px; border: 1px: solid #334155; }
+        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+        textarea { width: 100%; background: #0f172a; color: white; border: 1px solid #475569; border-radius: 6px; padding: 10px; font-size: 14px; resize: vertical; }
+        button { margin-top: 10px; background: #4f46e5; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; font-size: 14px; }
+        button:hover { background: #4338ca; }
+
+        /* Controls */
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        input[type="text"], select { flex: 1; min-width: 140px; background: #1e293b; color: white; border: 1px solid #475569; padding: 10px; border-radius: 6px; font-size: 14px; }
+
+        /* Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .record-card { background: #1e293b; border-radius: 8px; padding: 14px; border: 1px solid #334155; display: flex; flex-direction: column; justify-content: space-between; }
+        .artist { font-size: 0.85rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .title { font-size: 1.05rem; font-weight: bold; color: #f1f5f9; margin: 4px 0 8px 0; }
+        .meta { display: flex; gap: 8px; font-size: 0.75rem; color: #cbd5e1; flex-wrap: wrap; margin-top: 8px; }
+        .tag { background: #0f172a; padding: 3px 6px; border-radius: 4px; border: 1px solid #334155; }
+        .empty { text-align: center; color: #64748b; padding: 40px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🎵 Vinyl Vault</h1>
+        <span id="recordCount" style="font-size: 0.85rem; color: #94a3b8;">0 records</span>
+    </header>
+
+    <!-- Spreadsheet Paste Import Tool -->
+    <div class="card">
+        <label>Spreadsheet Quick Import</label>
+        <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;">Copy cells from your spreadsheet (Artist, Title, Cat#, Media, Sleeve, Speed) and paste below:</p>
+        <textarea id="spreadsheetPasteBox" rows="3" placeholder="Paste rows here..."></textarea>
+        <button id="processPasteBtn">Import Pasted Records</button>
+    </div>
+
+    <!-- Search & Sort Controls -->
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search artist or title...">
+        <select id="sortSelect">
+            <option value="artist">Sort by Artist</option>
+            <option value="title">Sort by Title</option>
+            <option value="speed">Sort by Speed</option>
+        </select>
+    </div>
+
+    <!-- Library Grid -->
+    <div id="recordGrid" class="grid"></div>
 </div>
 
 <script>
-document.getElementById('processPasteBtn')?.addEventListener('click', function() {
-  const text = document.getElementById('spreadsheetPasteBox').value.trim();
-  if (!text) {
-    alert('Please paste spreadsheet rows into the box first.');
-    return;
-  }
+let collection = JSON.parse(localStorage.getItem('vinylCollection') || '[]');
 
-  const lines = text.split('\n');
-  const newRecords = [];
-  let startIndex = 0;
+function renderCollection() {
+    const grid = document.getElementById('recordGrid');
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const sortBy = document.getElementById('sortSelect').value;
 
-  // Check if the first line is a header row
-  const firstCols = lines[0].split(/\t|,/);
-  if (firstCols[0].toLowerCase().includes('artist') || firstCols[1]?.toLowerCase().includes('title')) {
-    startIndex = 1; // Skip header row
-  }
+    let filtered = collection.filter(r => 
+        (r.artist && r.artist.toLowerCase().includes(search)) || 
+        (r.title && r.title.toLowerCase().includes(search))
+    );
 
-  for (let i = startIndex; i < lines.length; i++) {
-    const cols = lines[i].split(/\t|,/).map(c => c.trim());
-    if (cols.length < 2) continue; // Skip blank or invalid lines
-
-    newRecords.push({
-      artist: cols[0] || '',
-      title: cols[1] || '',
-      catNum: cols[2] || '',
-      media: cols[3] || '',
-      sleeve: cols[4] || '',
-      speed: cols[5] || '33 RPM'
+    filtered.sort((a, b) => {
+        let valA = (a[sortBy] || '').toLowerCase();
+        let valB = (b[sortBy] || '').toLowerCase();
+        return valA.localeCompare(valB);
     });
-  }
 
-  if (newRecords.length === 0) {
-    alert('No valid records found. Make sure columns are separated by tabs or commas.');
-    return;
-  }
+    document.getElementById('recordCount').textContent = `${collection.length} records`;
 
-  const current = JSON.parse(localStorage.getItem('vinylCollection') || '[]');
-  const updated = [...current, ...newRecords];
-  localStorage.setItem('vinylCollection', JSON.stringify(updated));
-  
-  alert('Successfully imported ' + newRecords.length + ' records!');
-  location.reload();
+    if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty">No records found. Paste your spreadsheet above to populate your library!</div>';
+        return;
+    }
+
+    grid.innerHTML = filtered.map(r => `
+        <div class="record-card">
+            <div>
+                <div class="artist">${escapeHtml(r.artist || 'Unknown Artist')}</div>
+                <div class="title">${escapeHtml(r.title || 'Untitled')}</div>
+            </div>
+            <div class="meta">
+                ${r.speed ? `<span class="tag">⚡ ${escapeHtml(r.speed)}</span>` : ''}
+                ${r.catNum ? `<span class="tag">🏷️ ${escapeHtml(r.catNum)}</span>` : ''}
+                ${r.media ? `<span class="tag">disc: ${escapeHtml(r.media)}</span>` : ''}
+                ${r.sleeve ? `<span class="tag">sleeve: ${escapeHtml(r.sleeve)}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Paste Handler
+document.getElementById('processPasteBtn').addEventListener('click', function() {
+    const text = document.getElementById('spreadsheetPasteBox').value.trim();
+    if (!text) {
+        alert('Please paste spreadsheet rows into the box first.');
+        return;
+    }
+
+    const lines = text.split('\n');
+    const newRecords = [];
+    let startIndex = 0;
+
+    const firstCols = lines[0].split(/\t|,/);
+    if (firstCols[0].toLowerCase().includes('artist') || firstCols[1]?.toLowerCase().includes('title')) {
+        startIndex = 1;
+    }
+
+    for (let i = startIndex; i < lines.length; i++) {
+        const cols = lines[i].split(/\t|,/).map(c => c.trim());
+        if (cols.length < 2) continue;
+
+        newRecords.push({
+            artist: cols[0] || '',
+            title: cols[1] || '',
+            catNum: cols[2] || '',
+            media: cols[3] || '',
+            sleeve: cols[4] || '',
+            speed: cols[5] || '33 RPM'
+        });
+    }
+
+    if (newRecords.length === 0) {
+        alert('No valid records found. Make sure columns are separated by tabs or commas.');
+        return;
+    }
+
+    collection = [...collection, ...newRecords];
+    localStorage.setItem('vinylCollection', JSON.stringify(collection));
+    document.getElementById('spreadsheetPasteBox').value = '';
+    
+    alert('Successfully imported ' + newRecords.length + ' records!');
+    renderCollection();
 });
+
+document.getElementById('searchInput').addEventListener('input', renderCollection);
+document.getElementById('sortSelect').addEventListener('change', renderCollection);
+
+// Initial Load
+renderCollection();
 </script>
+
+</body>
+</html>
