@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vinyl Collection Manager</title>
+  <title>Vinyl Vault - Collection Manager</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen pb-16">
@@ -12,12 +12,15 @@
   <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-10">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-bold">
+        <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-bold shadow-md shadow-amber-500/20">
           &#9673;
         </div>
-        <h1 class="text-xl font-bold tracking-tight">Vinyl Vault</h1>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white leading-none">Vinyl Vault</h1>
+          <p class="text-[10px] text-slate-400 mt-0.5">Personal Record Collection</p>
+        </div>
       </div>
-      <span id="record-count" class="text-xs bg-slate-800 text-amber-400 px-3 py-1 rounded-full font-medium">
+      <span id="record-count" class="text-xs bg-slate-800 text-amber-400 px-3 py-1 rounded-full font-semibold border border-amber-500/20">
         0 Records
       </span>
     </div>
@@ -25,135 +28,228 @@
 
   <main class="max-w-6xl mx-auto px-4 pt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
     
-    <!-- Entry Form -->
-    <section class="lg:col-span-5 bg-slate-800/60 p-6 rounded-2xl border border-slate-700/50 shadow-xl h-fit">
-      <h2 class="text-lg font-semibold mb-4 text-slate-200 flex items-center gap-2">
-        <span>&#43;</span> Add New Vinyl Record
-      </h2>
+    <!-- Entry / Import Sidebar -->
+    <section class="lg:col-span-5 space-y-6">
+      
+      <!-- Mode Selection Tabs -->
+      <div class="bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60 flex gap-1 shadow-lg">
+        <button 
+          id="tab-single" 
+          type="button" 
+          onclick="switchTab('single')"
+          class="flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 bg-amber-500 text-slate-950 shadow"
+        >
+          + Add Single Record
+        </button>
+        <button 
+          id="tab-bulk" 
+          type="button" 
+          onclick="switchTab('bulk')"
+          class="flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+        >
+          ⚡ Bulk Import Tool
+        </button>
+      </div>
 
-      <form id="record-form" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-            Album Title *
-          </label>
-          <input 
-            type="text" 
-            id="input-title" 
-            required 
-            placeholder="e.g. Rumours" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
-          />
-        </div>
+      <!-- Single Record Form -->
+      <div id="panel-single" class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/50 shadow-xl">
+        <h2 class="text-lg font-semibold mb-4 text-slate-200 flex items-center gap-2">
+          <span>&#43;</span> Add New Vinyl Record
+        </h2>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-            Artist *
-          </label>
-          <input 
-            type="text" 
-            id="input-artist" 
-            required 
-            placeholder="e.g. Fleetwood Mac" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
-          />
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
+        <form id="record-form" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-              Format
-            </label>
-            <select 
-              id="input-format" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
-            >
-              <option value="12&quot; LP">12" LP</option>
-              <option value="7&quot; Single">7" Single</option>
-              <option value="10&quot; EP">10" EP</option>
-              <option value="Box Set">Box Set</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-              Release Year
+              Album Title *
             </label>
             <input 
-              type="number" 
-              id="input-year" 
-              placeholder="e.g. 1977" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+              type="text" 
+              id="input-title" 
+              required 
+              placeholder="e.g. Rumours" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
             />
           </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+              Artist *
+            </label>
+            <input 
+              type="text" 
+              id="input-artist" 
+              required 
+              placeholder="e.g. Fleetwood Mac" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                Format
+              </label>
+              <select 
+                id="input-format" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+              >
+                <option value="12&quot; LP">12" LP</option>
+                <option value="7&quot; Single">7" Single</option>
+                <option value="10&quot; EP">10" EP</option>
+                <option value="Box Set">Box Set</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                Release Year
+              </label>
+              <input 
+                type="number" 
+                id="input-year" 
+                placeholder="e.g. 1977" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+              Genre / Tags
+            </label>
+            <input 
+              type="text" 
+              id="input-genre" 
+              placeholder="e.g. Classic Rock, Pop" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+              Catalog Number
+            </label>
+            <input 
+              type="text" 
+              id="input-catalog" 
+              placeholder="e.g. BSK 3010" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+              External Reference Link (Optional)
+            </label>
+            <input 
+              type="url" 
+              id="input-url" 
+              placeholder="https://musicbrainz.org/release/..." 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+            />
+          </div>
+
+          <div class="pt-2 flex gap-2">
+            <button 
+              type="button" 
+              id="btn-assist"
+              class="flex-1 bg-slate-700 hover:bg-slate-600 text-amber-300 font-medium py-2.5 px-4 rounded-lg text-sm transition flex items-center justify-center gap-2 border border-amber-500/30"
+            >
+              <span>&#9889;</span> Auto-Fill Data
+            </button>
+
+            <button 
+              type="submit" 
+              class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-5 rounded-lg text-sm transition shadow-lg shadow-amber-500/20"
+            >
+              Add Record
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Bulk Import Panel -->
+      <div id="panel-bulk" class="hidden bg-slate-800/60 p-6 rounded-2xl border border-slate-700/50 shadow-xl space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold text-slate-200 flex items-center gap-2">
+            <span>⚡</span> Bulk Text / PDF Import
+          </h2>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Paste text copied directly from your PDF, document, or spreadsheet. Each line will be parsed into an individual record!
+          </p>
+        </div>
+
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 text-[11px] text-slate-300 space-y-1">
+          <p class="font-bold text-amber-400 uppercase tracking-wide">Supported Line Formats:</p>
+          <ul class="list-disc list-inside space-y-0.5 text-slate-400">
+            <li><code class="text-slate-200">Artist - Album Title</code></li>
+            <li><code class="text-slate-200">Album Title - Artist (1977)</code></li>
+            <li><code class="text-slate-200">Artist, Album Title, Format, Year</code></li>
+            <li><code class="text-slate-200">Album Title, Artist</code></li>
+          </ul>
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-            Genre / Tags
+            Paste PDF Text / List Here
           </label>
-          <input 
-            type="text" 
-            id="input-genre" 
-            placeholder="e.g. Classic Rock, Pop" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
-          />
+          <textarea 
+            id="bulk-text-input" 
+            rows="8" 
+            placeholder="Fleetwood Mac - Rumours&#10;Pink Floyd - Dark Side of the Moon (1973)&#10;Miles Davis - Kind of Blue, 12&quot; LP, 1959&#10;The Beatles - Abbey Road"
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-amber-500 transition leading-relaxed"
+          ></textarea>
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-            Catalog Number
+            Default Format for Items Without Format Specified
           </label>
-          <input 
-            type="text" 
-            id="input-catalog" 
-            placeholder="e.g. BSK 3010" 
-            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-            External Reference Link (Optional)
-          </label>
-          <input 
-            type="url" 
-            id="input-url" 
-            placeholder="https://musicbrainz.org/release/..." 
-            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
-          />
-        </div>
-
-        <div class="pt-2 flex gap-2">
-          <!-- Assist Button -->
-          <button 
-            type="button" 
-            id="btn-assist"
-            class="flex-1 bg-slate-700 hover:bg-slate-600 text-amber-300 font-medium py-2.5 px-4 rounded-lg text-sm transition flex items-center justify-center gap-2 border border-amber-500/30"
+          <select 
+            id="bulk-default-format" 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
           >
-            <span>&#9889;</span> Auto-Fill Data
-          </button>
-
-          <!-- Direct Save Button -->
-          <button 
-            type="submit" 
-            class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-5 rounded-lg text-sm transition"
-          >
-            Add Record
-          </button>
+            <option value="12&quot; LP">12" LP</option>
+            <option value="7&quot; Single">7" Single</option>
+            <option value="10&quot; EP">10" EP</option>
+            <option value="Box Set">Box Set</option>
+          </select>
         </div>
-      </form>
+
+        <button 
+          type="button" 
+          onclick="processBulkImport()"
+          class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-4 rounded-lg text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+        >
+          <span>📥</span> Parse & Import Records
+        </button>
+
+        <div id="bulk-feedback" class="hidden p-3 rounded-lg text-xs font-medium border text-center"></div>
+      </div>
+
     </section>
 
     <!-- Collection List View -->
     <section class="lg:col-span-7">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-slate-200">Your Collection</h2>
-        <input 
-          type="text" 
-          id="search-filter" 
-          placeholder="Filter collection..." 
-          class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 w-48"
-        />
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <h2 class="text-lg font-semibold text-slate-200 flex items-center gap-2">
+          Your Collection
+        </h2>
+        <div class="flex items-center gap-2">
+          <input 
+            type="text" 
+            id="search-filter" 
+            placeholder="Filter by title, artist, format..." 
+            class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 w-full sm:w-56"
+          />
+          <button 
+            onclick="clearAllRecords()" 
+            title="Clear Collection" 
+            class="text-xs bg-slate-800 hover:bg-rose-950/50 text-slate-400 hover:text-rose-400 border border-slate-700 px-2.5 py-2 rounded-lg transition"
+          >
+            Clear All
+          </button>
+        </div>
       </div>
 
       <div id="collection-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -161,13 +257,14 @@
       </div>
 
       <div id="empty-state" class="text-center py-12 border-2 border-dashed border-slate-800 rounded-2xl">
-        <p class="text-slate-500 text-sm">No records added yet. Enter details on the left to start!</p>
+        <p class="text-slate-500 text-sm">No records added yet.</p>
+        <p class="text-xs text-slate-600 mt-1">Use the form or Bulk Import tool on the left to populate your vault!</p>
       </div>
     </section>
 
   </main>
 
-  <!-- Confirmation Modal -->
+  <!-- Confirmation Modal for Auto-Fill -->
   <div id="confirm-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative">
       <h3 class="text-lg font-bold text-slate-100 mb-1">Confirm Metadata Autofill</h3>
@@ -222,7 +319,7 @@
   </div>
 
   <script>
-    // App State Management
+    // App State
     let records = JSON.parse(localStorage.getItem('vinyl_vault_data') || '[]');
     let pendingSuggestion = null;
 
@@ -235,6 +332,26 @@
     const recordCount = document.getElementById('record-count');
     const searchFilter = document.getElementById('search-filter');
 
+    // Switch Sidebar Tabs
+    function switchTab(tab) {
+      const btnSingle = document.getElementById('tab-single');
+      const btnBulk = document.getElementById('tab-bulk');
+      const panelSingle = document.getElementById('panel-single');
+      const panelBulk = document.getElementById('panel-bulk');
+
+      if (tab === 'single') {
+        btnSingle.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 bg-amber-500 text-slate-950 shadow";
+        btnBulk.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50";
+        panelSingle.classList.remove('hidden');
+        panelBulk.classList.add('hidden');
+      } else {
+        btnBulk.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 bg-amber-500 text-slate-950 shadow";
+        btnSingle.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50";
+        panelBulk.classList.remove('hidden');
+        panelSingle.classList.add('hidden');
+      }
+    }
+
     // Save state to LocalStorage
     function saveState() {
       localStorage.setItem('vinyl_vault_data', JSON.stringify(records));
@@ -243,10 +360,11 @@
 
     // Render Collection Grid
     function renderCollection() {
-      const filterText = searchFilter.value.toLowerCase();
+      const filterText = searchFilter.value.toLowerCase().trim();
       const filtered = records.filter(r => 
         r.title.toLowerCase().includes(filterText) || 
         r.artist.toLowerCase().includes(filterText) ||
+        (r.format && r.format.toLowerCase().includes(filterText)) ||
         (r.genre && r.genre.toLowerCase().includes(filterText))
       );
 
@@ -264,39 +382,48 @@
         const card = document.createElement('div');
         card.className = "bg-slate-800/80 border border-slate-700/70 p-4 rounded-xl flex flex-col justify-between hover:border-amber-500/50 transition shadow-lg relative group";
         
-        // Title rendering: Make clickable link if URL exists
         const titleHtml = rec.url 
           ? `<a href="${rec.url}" target="_blank" rel="noopener noreferrer" class="font-bold text-slate-100 hover:text-amber-400 hover:underline text-base leading-tight inline-flex items-center gap-1.5">
-               ${rec.title} <span class="text-xs text-amber-400/80">&#8599;</span>
+               ${escapeHtml(rec.title)} <span class="text-xs text-amber-400/80">&#8599;</span>
              </a>`
-          : `<h3 class="font-bold text-slate-100 text-base leading-tight">${rec.title}</h3>`;
+          : `<h3 class="font-bold text-slate-100 text-base leading-tight">${escapeHtml(rec.title)}</h3>`;
 
         card.innerHTML = `
           <div>
             <div class="flex items-start justify-between gap-2 mb-2">
               <span class="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
-                ${rec.format || '12" LP'}
+                ${escapeHtml(rec.format || '12" LP')}
               </span>
               <button onclick="deleteRecord(${idx})" class="text-slate-500 hover:text-rose-400 text-xs font-bold transition">
                 &#10005;
               </button>
             </div>
             ${titleHtml}
-            <p class="text-sm text-slate-300 mb-3 mt-1">${rec.artist}</p>
+            <p class="text-sm text-slate-300 mb-3 mt-1">${escapeHtml(rec.artist)}</p>
           </div>
 
           <div class="border-t border-slate-700/50 pt-2 text-xs text-slate-400 flex flex-wrap justify-between gap-y-1">
-            <span>Year: <strong class="text-slate-200">${rec.year || 'N/A'}</strong></span>
-            <span>Cat #: <strong class="text-slate-200">${rec.catalog || 'N/A'}</strong></span>
-            ${rec.genre ? `<div class="w-full mt-1 text-slate-400 truncate">Genre: ${rec.genre}</div>` : ''}
-            ${rec.url ? `<div class="w-full mt-1"><a href="${rec.url}" target="_blank" rel="noopener noreferrer" class="text-amber-400/80 hover:text-amber-300 hover:underline">View Release Info ↗</a></div>` : ''}
+            <span>Year: <strong class="text-slate-200">${escapeHtml(rec.year || 'N/A')}</strong></span>
+            <span>Cat #: <strong class="text-slate-200">${escapeHtml(rec.catalog || 'N/A')}</strong></span>
+            ${rec.genre ? `<div class="w-full mt-1 text-slate-400 truncate">Genre: ${escapeHtml(rec.genre)}</div>` : ''}
+            ${rec.url ? `<div class="w-full mt-1"><a href="${escapeHtml(rec.url)}" target="_blank" rel="noopener noreferrer" class="text-amber-400/80 hover:text-amber-300 hover:underline">View Release Info ↗</a></div>` : ''}
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    // Form Submit Handler (Add / Update)
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Form Submit Handler
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -323,6 +450,126 @@
         saveState();
       }
     };
+
+    // Clear All Records
+    window.clearAllRecords = function() {
+      if (records.length === 0) return;
+      if (confirm(`Are you sure you want to delete all ${records.length} records? This cannot be undone.`)) {
+        records = [];
+        saveState();
+      }
+    };
+
+    // Bulk Import Logic
+    window.processBulkImport = function() {
+      const rawText = document.getElementById('bulk-text-input').value;
+      const defaultFormat = document.getElementById('bulk-default-format').value;
+      const feedback = document.getElementById('bulk-feedback');
+
+      if (!rawText.trim()) {
+        showFeedback("Please paste or type text into the box above before importing.", "error");
+        return;
+      }
+
+      const lines = rawText.split('\n');
+      const newItems = [];
+
+      lines.forEach(line => {
+        const cleaned = line.trim();
+        if (!cleaned) return;
+
+        let artist = '';
+        let title = '';
+        let year = '';
+        let format = defaultFormat;
+        let catalog = '';
+
+        // Extract Year from parentheses if present e.g. "Title (1977)"
+        let textWithoutYear = cleaned;
+        const yearMatch = cleaned.match(/\((19\d\d|20\d\d)\)/);
+        if (yearMatch) {
+          year = yearMatch[1];
+          textWithoutYear = cleaned.replace(yearMatch[0], '').trim();
+        }
+
+        // Format detection
+        if (/7"|7in|7 inch|45 rpm|45rpm|single/i.test(cleaned)) {
+          format = '7" Single';
+        } else if (/10"|10in|10 inch|ep/i.test(cleaned)) {
+          format = '10" EP';
+        } else if (/box set|boxset/i.test(cleaned)) {
+          format = 'Box Set';
+        } else if (/12"|12in|12 inch|lp/i.test(cleaned)) {
+          format = '12" LP';
+        }
+
+        // Delimiter parsing
+        if (textWithoutYear.includes(' - ')) {
+          const parts = textWithoutYear.split(' - ');
+          artist = parts[0].trim();
+          title = parts.slice(1).join(' - ').trim();
+        } else if (textWithoutYear.includes(' – ')) {
+          const parts = textWithoutYear.split(' – ');
+          artist = parts[0].trim();
+          title = parts.slice(1).join(' – ').trim();
+        } else if (textWithoutYear.includes(',')) {
+          const parts = textWithoutYear.split(',');
+          if (parts.length >= 2) {
+            title = parts[0].trim();
+            artist = parts[1].trim();
+            if (parts[2] && /^\d{4}$/.test(parts[2].trim())) {
+              year = parts[2].trim();
+            }
+          }
+        } else if (textWithoutYear.includes('\t')) {
+          const parts = textWithoutYear.split('\t');
+          artist = parts[0].trim();
+          title = parts.slice(1).join(' ').trim();
+        } else {
+          title = textWithoutYear;
+          artist = 'Various Artists';
+        }
+
+        // Clean up quotes
+        title = title.replace(/^["']|["']$/g, '').trim();
+        artist = artist.replace(/^["']|["']$/g, '').trim();
+
+        if (title) {
+          newItems.push({
+            id: Date.now() + Math.random(),
+            title: title,
+            artist: artist || 'Unknown Artist',
+            format: format,
+            year: year,
+            genre: '',
+            catalog: catalog,
+            url: ''
+          });
+        }
+      });
+
+      if (newItems.length > 0) {
+        records = [...newItems, ...records];
+        saveState();
+        document.getElementById('bulk-text-input').value = '';
+        showFeedback(`Success! Imported ${newItems.length} records into your vault.`, "success");
+      } else {
+        showFeedback("Could not parse any valid records. Check the format and try again.", "error");
+      }
+    };
+
+    function showFeedback(msg, type) {
+      const feedback = document.getElementById('bulk-feedback');
+      feedback.classList.remove('hidden', 'bg-emerald-950/50', 'text-emerald-400', 'border-emerald-800', 'bg-rose-950/50', 'text-rose-400', 'border-rose-800');
+      
+      if (type === 'success') {
+        feedback.classList.add('bg-emerald-950/50', 'text-emerald-400', 'border-emerald-800');
+      } else {
+        feedback.classList.add('bg-rose-950/50', 'text-rose-400', 'border-rose-800');
+      }
+      
+      feedback.textContent = msg;
+    }
 
     // Auto-Assist Feature (MusicBrainz Search API)
     btnAssist.addEventListener('click', async () => {
@@ -357,7 +604,6 @@
             url: match.id ? `https://musicbrainz.org/release/${match.id}` : ''
           };
 
-          // Populate Confirmation Modal
           document.getElementById('modal-title').textContent = pendingSuggestion.title;
           document.getElementById('modal-artist').textContent = pendingSuggestion.artist;
           document.getElementById('modal-year').textContent = pendingSuggestion.year || 'Unknown';
@@ -401,7 +647,6 @@
         if (pendingSuggestion.catalog) document.getElementById('input-catalog').value = pendingSuggestion.catalog;
         if (pendingSuggestion.url) document.getElementById('input-url').value = pendingSuggestion.url;
         
-        // Match format option if available
         const formatSelect = document.getElementById('input-format');
         if (pendingSuggestion.format.toLowerCase().includes('7')) {
           formatSelect.value = '7" Single';
@@ -425,4 +670,3 @@
   </script>
 </body>
 </html>
-
