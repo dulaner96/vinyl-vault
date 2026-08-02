@@ -68,7 +68,7 @@
         <form id="record-form" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-              Album Title *
+              Album Name *
             </label>
             <input 
               type="text" 
@@ -95,17 +95,78 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                Format
+                Year Released
               </label>
-              <select 
-                id="input-format" 
+              <input 
+                type="text" 
+                id="input-year" 
+                placeholder="e.g. 1977" 
                 class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
-              >
-                <option value="12&quot; LP">12" LP</option>
-                <option value="7&quot; Single">7" Single</option>
-                <option value="10&quot; EP">10" EP</option>
-                <option value="Box Set">Box Set</option>
-              </select>
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                Year Pressed
+              </label>
+              <input 
+                type="text" 
+                id="input-year-pressed" 
+                placeholder="e.g. 1977" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                Label
+              </label>
+              <input 
+                type="text" 
+                id="input-label" 
+                placeholder="e.g. Warner Bros." 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                Number (Catalog)
+              </label>
+              <input 
+                type="text" 
+                id="input-catalog" 
+                placeholder="e.g. BSK 3010" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                Sleeve Cond.
+              </label>
+              <input 
+                type="text" 
+                id="input-sleeve" 
+                placeholder="e.g. VG+" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                Disk Cond.
+              </label>
+              <input 
+                type="text" 
+                id="input-disk" 
+                placeholder="e.g. NM" 
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
+              />
             </div>
 
             <div>
@@ -121,44 +182,6 @@
                 <option value="78 RPM">78 RPM</option>
               </select>
             </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                Release Year
-              </label>
-              <input 
-                type="number" 
-                id="input-year" 
-                placeholder="e.g. 1977" 
-                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                Catalog Number
-              </label>
-              <input 
-                type="text" 
-                id="input-catalog" 
-                placeholder="e.g. BSK 3010" 
-                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-              Genre / Tags
-            </label>
-            <input 
-              type="text" 
-              id="input-genre" 
-              placeholder="e.g. Classic Rock, Pop" 
-              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition"
-            />
           </div>
 
           <div class="pt-2 flex gap-2">
@@ -187,7 +210,7 @@
             <span>⚡</span> Bulk Text Import
           </h2>
           <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-            Paste text copied from your lists or PDFs. Each line will be parsed automatically.
+            Paste text copied from lists or notes. Each line will be parsed automatically.
           </p>
         </div>
 
@@ -232,7 +255,10 @@
             <span>📋</span> Spreadsheet Paste Tool
           </h2>
           <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-            Highlight rows directly in Excel or Google Sheets, copy them, and paste below (Columns expected: Artist, Title, Catalog #, Format, Speed, Year):
+            Highlight rows directly in Excel or Google Sheets using this exact column order and paste below:
+          </p>
+          <p class="text-[11px] text-amber-400/90 font-mono mt-1 bg-slate-900/80 p-2 rounded border border-slate-800">
+            Album Name | Artist | Year Released | Year Pressed | Label | Number | Sleeve Condition | Disk Condition | Speed
           </p>
         </div>
 
@@ -240,7 +266,7 @@
           <textarea 
             id="spreadsheetPasteBox" 
             rows="6" 
-            placeholder="Artist&#9;Title&#9;Catalog #&#9;Format&#9;Speed&#9;Year"
+            placeholder="Rumours&#9;Fleetwood Mac&#9;1977&#9;1977&#9;Warner Bros.&#9;BSK 3010&#9;VG+&#9;NM&#9;33 RPM"
             class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-amber-500 transition leading-relaxed"
           ></textarea>
         </div>
@@ -301,7 +327,7 @@
 
       <div class="space-y-3 bg-slate-900/70 p-4 rounded-xl border border-slate-800 text-sm">
         <div class="flex justify-between border-b border-slate-800 pb-2">
-          <span class="text-slate-400">Title:</span>
+          <span class="text-slate-400">Album Name:</span>
           <span id="modal-title" class="font-medium text-amber-400"></span>
         </div>
         <div class="flex justify-between border-b border-slate-800 pb-2">
@@ -309,15 +335,15 @@
           <span id="modal-artist" class="font-medium text-slate-200"></span>
         </div>
         <div class="flex justify-between border-b border-slate-800 pb-2">
-          <span class="text-slate-400">Release Year:</span>
+          <span class="text-slate-400">Year Released:</span>
           <span id="modal-year" class="font-medium text-slate-200"></span>
         </div>
         <div class="flex justify-between border-b border-slate-800 pb-2">
-          <span class="text-slate-400">Suggested Format:</span>
-          <span id="modal-format" class="font-medium text-slate-200"></span>
+          <span class="text-slate-400">Label:</span>
+          <span id="modal-label" class="font-medium text-slate-200"></span>
         </div>
         <div class="flex justify-between border-b border-slate-800 pb-2">
-          <span class="text-slate-400">Catalog #:</span>
+          <span class="text-slate-400">Number / Cat #:</span>
           <span id="modal-catalog" class="font-medium text-slate-200"></span>
         </div>
         <div class="flex justify-between pt-1">
@@ -394,10 +420,11 @@
       const filtered = records.filter(r => 
         (r.title && r.title.toLowerCase().includes(filterText)) || 
         (r.artist && r.artist.toLowerCase().includes(filterText)) ||
-        (r.format && r.format.toLowerCase().includes(filterText)) ||
-        (r.genre && r.genre.toLowerCase().includes(filterText)) ||
+        (r.label && r.label.toLowerCase().includes(filterText)) ||
         (r.catalog && r.catalog.toLowerCase().includes(filterText)) ||
-        (r.speed && r.speed.toLowerCase().includes(filterText))
+        (r.speed && r.speed.toLowerCase().includes(filterText)) ||
+        (r.sleeveCondition && r.sleeveCondition.toLowerCase().includes(filterText)) ||
+        (r.diskCondition && r.diskCondition.toLowerCase().includes(filterText))
       );
 
       recordCount.textContent = `${records.length} Record${records.length === 1 ? '' : 's'}`;
@@ -418,12 +445,11 @@
           <div>
             <div class="flex items-start justify-between gap-2 mb-2">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
-                  ${escapeHtml(rec.format || '12" LP')}
-                </span>
                 <span class="text-[10px] px-2 py-0.5 rounded bg-slate-900 text-slate-300 font-semibold border border-slate-700">
                   ⚡ ${escapeHtml(rec.speed || '33 RPM')}
                 </span>
+                ${rec.sleeveCondition ? `<span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20" title="Sleeve Condition">Sleeve: ${escapeHtml(rec.sleeveCondition)}</span>` : ''}
+                ${rec.diskCondition ? `<span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20" title="Disk Condition">Disk: ${escapeHtml(rec.diskCondition)}</span>` : ''}
               </div>
               <button onclick="deleteRecord(${idx})" class="text-slate-500 hover:text-rose-400 text-xs font-bold transition">
                 &#10005;
@@ -433,10 +459,11 @@
             <p class="text-sm text-slate-300 mb-3 mt-1">${escapeHtml(rec.artist || 'Unknown Artist')}</p>
           </div>
 
-          <div class="border-t border-slate-700/50 pt-2 text-xs text-slate-400 flex flex-wrap justify-between gap-y-1">
-            <span>Year: <strong class="text-slate-200">${escapeHtml(rec.year || 'N/A')}</strong></span>
-            <span>Cat #: <strong class="text-slate-200">${escapeHtml(rec.catalog || 'N/A')}</strong></span>
-            ${rec.genre ? `<div class="w-full mt-1 text-slate-400 truncate">Genre: ${escapeHtml(rec.genre)}</div>` : ''}
+          <div class="border-t border-slate-700/50 pt-2 text-xs text-slate-400 grid grid-cols-2 gap-y-1">
+            <span>Released: <strong class="text-slate-200">${escapeHtml(rec.year || 'N/A')}</strong></span>
+            <span>Pressed: <strong class="text-slate-200">${escapeHtml(rec.yearPressed || 'N/A')}</strong></span>
+            <span>Label: <strong class="text-slate-200">${escapeHtml(rec.label || 'N/A')}</strong></span>
+            <span>No.: <strong class="text-slate-200">${escapeHtml(rec.catalog || 'N/A')}</strong></span>
           </div>
         `;
         grid.appendChild(card);
@@ -460,11 +487,13 @@
         id: Date.now(),
         title: document.getElementById('input-title').value.trim(),
         artist: document.getElementById('input-artist').value.trim(),
-        format: document.getElementById('input-format').value,
-        speed: document.getElementById('input-speed').value,
         year: document.getElementById('input-year').value.trim(),
-        genre: document.getElementById('input-genre').value.trim(),
-        catalog: document.getElementById('input-catalog').value.trim()
+        yearPressed: document.getElementById('input-year-pressed').value.trim(),
+        label: document.getElementById('input-label').value.trim(),
+        catalog: document.getElementById('input-catalog').value.trim(),
+        sleeveCondition: document.getElementById('input-sleeve').value.trim(),
+        diskCondition: document.getElementById('input-disk').value.trim(),
+        speed: document.getElementById('input-speed').value
       };
 
       records.unshift(newRecord);
@@ -506,23 +535,12 @@
         let artist = '';
         let title = '';
         let year = '';
-        let format = '12" LP';
-        let speed = defaultSpeed;
 
         let textWithoutYear = cleaned;
         const yearMatch = cleaned.match(/\((19\d\d|20\d\d)\)/);
         if (yearMatch) {
           year = yearMatch[1];
           textWithoutYear = cleaned.replace(yearMatch[0], '').trim();
-        }
-
-        if (/7"|7in|7 inch|45 rpm|45rpm|single/i.test(cleaned)) {
-          format = '7" Single';
-          speed = '45 RPM';
-        } else if (/10"|10in|10 inch|ep/i.test(cleaned)) {
-          format = '10" EP';
-        } else if (/box set|boxset/i.test(cleaned)) {
-          format = 'Box Set';
         }
 
         if (textWithoutYear.includes(' - ')) {
@@ -538,11 +556,13 @@
           id: Date.now() + Math.random(),
           title: title.replace(/^["']|["']$/g, '').trim(),
           artist: artist.replace(/^["']|["']$/g, '').trim(),
-          format: format,
-          speed: speed,
           year: year,
-          genre: '',
-          catalog: ''
+          yearPressed: '',
+          label: '',
+          catalog: '',
+          sleeveCondition: '',
+          diskCondition: '',
+          speed: defaultSpeed
         });
       });
 
@@ -568,7 +588,7 @@
       let startIndex = 0;
 
       const firstCols = lines[0].split(/\t|,/);
-      if (firstCols[0].toLowerCase().includes('artist') || firstCols[1]?.toLowerCase().includes('title')) {
+      if (firstCols[0].toLowerCase().includes('album') || firstCols[1]?.toLowerCase().includes('artist')) {
         startIndex = 1;
       }
 
@@ -578,13 +598,15 @@
 
         newRecords.push({
           id: Date.now() + Math.random(),
-          artist: cols[0] || '',
-          title: cols[1] || '',
-          catalog: cols[2] || '',
-          format: cols[3] || '12" LP',
-          speed: cols[4] || '33 RPM',
-          year: cols[5] || '',
-          genre: cols[6] || ''
+          title: cols[0] || '',           // Album Name
+          artist: cols[1] || '',          // Artist
+          year: cols[2] || '',            // Year Released
+          yearPressed: cols[3] || '',     // Year Pressed
+          label: cols[4] || '',           // Label
+          catalog: cols[5] || '',         // Number
+          sleeveCondition: cols[6] || '', // Sleeve Condition
+          diskCondition: cols[7] || '',   // Disk Condition
+          speed: cols[8] || '33 RPM'      // Speed
         });
       }
 
@@ -617,7 +639,7 @@
       const artist = document.getElementById('input-artist').value.trim();
 
       if (!title) {
-        alert("Please enter at least an Album Title to look up metadata.");
+        alert("Please enter at least an Album Name to look up metadata.");
         return;
       }
 
@@ -639,7 +661,7 @@
             title: match.title || title,
             artist: match['artist-credit'] ? match['artist-credit'][0].name : artist,
             year: match.date ? match.date.substring(0, 4) : '',
-            format: match.media && match.media[0] && match.media[0].format ? match.media[0].format : '12" LP',
+            label: match['label-info'] && match['label-info'][0] && match['label-info'][0].label ? match['label-info'][0].label.name : '',
             catalog: match['label-info'] && match['label-info'][0] ? match['label-info'][0]['catalog-number'] || '' : '',
             url: match.id ? `https://musicbrainz.org/release/${match.id}` : ''
           };
@@ -647,7 +669,7 @@
           document.getElementById('modal-title').textContent = pendingSuggestion.title;
           document.getElementById('modal-artist').textContent = pendingSuggestion.artist;
           document.getElementById('modal-year').textContent = pendingSuggestion.year || 'Unknown';
-          document.getElementById('modal-format').textContent = pendingSuggestion.format;
+          document.getElementById('modal-label').textContent = pendingSuggestion.label || 'N/A';
           document.getElementById('modal-catalog').textContent = pendingSuggestion.catalog || 'N/A';
           
           const modalLink = document.getElementById('modal-link');
@@ -683,17 +705,8 @@
         if (pendingSuggestion.title) document.getElementById('input-title').value = pendingSuggestion.title;
         if (pendingSuggestion.artist) document.getElementById('input-artist').value = pendingSuggestion.artist;
         if (pendingSuggestion.year) document.getElementById('input-year').value = pendingSuggestion.year;
+        if (pendingSuggestion.label) document.getElementById('input-label').value = pendingSuggestion.label;
         if (pendingSuggestion.catalog) document.getElementById('input-catalog').value = pendingSuggestion.catalog;
-        
-        const formatSelect = document.getElementById('input-format');
-        if (pendingSuggestion.format.toLowerCase().includes('7')) {
-          formatSelect.value = '7" Single';
-          document.getElementById('input-speed').value = '45 RPM';
-        } else if (pendingSuggestion.format.toLowerCase().includes('10')) {
-          formatSelect.value = '10" EP';
-        } else {
-          formatSelect.value = '12" LP';
-        }
       }
 
       pendingSuggestion = null;
