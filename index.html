@@ -1,1 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vinyl Collection Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-16">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-bold">
+          &#9673;
+        </div>
+        <h1 class="text-xl font-bold tracking-tight">Vinyl Vault</h1>
+      </div>
+      <span id="record-count" class="text-xs bg-slate-800 text-amber-400 px-3 py-1 rounded-full font-medium">
+        0 Records
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 pt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Entry Form -->
+    <section class="lg:col-span-5 bg-slate-800/60 p-6 rounded-2xl border border-slate-700/50 shadow-xl h-fit">
+      <h2 class="text-lg font-semibold mb-4 text-slate-200 flex items-center gap-2">
+        <span>&#43;</span> Add New Vinyl Record
+      </h2>
+
+      <form id="record-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+            Album Title *
+          </label>
+          <input 
+            type="text" 
+            id="input-title" 
+            required 
+            placeholder="e.g. Rumours" 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+            Artist *
+          </label>
+          <input 
+            type="text" 
+            id="input-artist" 
+            required 
+            placeholder="e.g. Fleetwood Mac" 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+              Format
+            </label>
+            <select 
+              id="input-format" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+            >
+              <option value="12&quot; LP">12" LP</option>
+              <option value="7&quot; Single">7" Single</option>
+              <option value="10&quot; EP">10" EP</option>
+              <option value="Box Set">Box Set</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+              Release Year
+            </label>
+            <input 
+              type="number" 
+              id="input-year" 
+              placeholder="e.g. 1977" 
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+            Genre / Tags
+          </label>
+          <input 
+            type="text" 
+            id="input-genre" 
+            placeholder="e.g. Classic Rock, Pop" 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+            Catalog Number
+          </label>
+          <input 
+            type="text" 
+            id="input-catalog" 
+            placeholder="e.g. BSK 3010" 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+            External Reference Link (Optional)
+          </label>
+          <input 
+            type="url" 
+            id="input-url" 
+            placeholder="https://musicbrainz.org/release/..." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
+          />
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <!-- Assist Button -->
+          <button 
+            type="button" 
+            id="btn-assist"
+            class="flex-1 bg-slate-700 hover:bg-slate-600 text-amber-300 font-medium py-2.5 px-4 rounded-lg text-sm transition flex items-center justify-center gap-2 border border-amber-500/30"
+          >
+            <span>&#9889;</span> Auto-Fill Data
+          </button>
+
+          <!-- Direct Save Button -->
+          <button 
+            type="submit" 
+            class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 px-5 rounded-lg text-sm transition"
+          >
+            Add Record
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Collection List View -->
+    <section class="lg:col-span-7">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-slate-200">Your Collection</h2>
+        <input 
+          type="text" 
+          id="search-filter" 
+          placeholder="Filter collection..." 
+          class="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-500 w-48"
+        />
+      </div>
+
+      <div id="collection-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Record Cards rendered dynamically here -->
+      </div>
+
+      <div id="empty-state" class="text-center py-12 border-2 border-dashed border-slate-800 rounded-2xl">
+        <p class="text-slate-500 text-sm">No records added yet. Enter details on the left to start!</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Confirmation Modal -->
+  <div id="confirm-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-100 mb-1">Confirm Metadata Autofill</h3>
+      <p class="text-xs text-slate-400 mb-4">Review the retrieved details from MusicBrainz before applying them to your record entry.</p>
+
+      <div class="space-y-3 bg-slate-900/70 p-4 rounded-xl border border-slate-800 text-sm">
+        <div class="flex justify-between border-b border-slate-800 pb-2">
+          <span class="text-slate-400">Title:</span>
+          <span id="modal-title" class="font-medium text-amber-400"></span>
+        </div>
+        <div class="flex justify-between border-b border-slate-800 pb-2">
+          <span class="text-slate-400">Artist:</span>
+          <span id="modal-artist" class="font-medium text-slate-200"></span>
+        </div>
+        <div class="flex justify-between border-b border-slate-800 pb-2">
+          <span class="text-slate-400">Release Year:</span>
+          <span id="modal-year" class="font-medium text-slate-200"></span>
+        </div>
+        <div class="flex justify-between border-b border-slate-800 pb-2">
+          <span class="text-slate-400">Suggested Format:</span>
+          <span id="modal-format" class="font-medium text-slate-200"></span>
+        </div>
+        <div class="flex justify-between border-b border-slate-800 pb-2">
+          <span class="text-slate-400">Catalog #:</span>
+          <span id="modal-catalog" class="font-medium text-slate-200"></span>
+        </div>
+        <div class="flex justify-between pt-1">
+          <span class="text-slate-400">Database Source:</span>
+          <a id="modal-link" href="#" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline font-medium text-xs flex items-center gap-1">
+            View on MusicBrainz ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button 
+          id="btn-modal-cancel" 
+          type="button"
+          class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-semibold text-slate-300 transition"
+        >
+          Discard Suggestion
+        </button>
+        <button 
+          id="btn-modal-apply" 
+          type="button"
+          class="px-4 py-2 bg-amber-500 hover:bg-amber-400 rounded-lg text-xs font-bold text-slate-950 transition"
+        >
+          Apply Suggestions
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // App State Management
+    let records = JSON.parse(localStorage.getItem('vinyl_vault_data') || '[]');
+    let pendingSuggestion = null;
+
+    // DOM Elements
+    const form = document.getElementById('record-form');
+    const btnAssist = document.getElementById('btn-assist');
+    const modal = document.getElementById('confirm-modal');
+    const grid = document.getElementById('collection-grid');
+    const emptyState = document.getElementById('empty-state');
+    const recordCount = document.getElementById('record-count');
+    const searchFilter = document.getElementById('search-filter');
+
+    // Save state to LocalStorage
+    function saveState() {
+      localStorage.setItem('vinyl_vault_data', JSON.stringify(records));
+      renderCollection();
+    }
+
+    // Render Collection Grid
+    function renderCollection() {
+      const filterText = searchFilter.value.toLowerCase();
+      const filtered = records.filter(r => 
+        r.title.toLowerCase().includes(filterText) || 
+        r.artist.toLowerCase().includes(filterText) ||
+        (r.genre && r.genre.toLowerCase().includes(filterText))
+      );
+
+      recordCount.textContent = `${records.length} Record${records.length === 1 ? '' : 's'}`;
+      grid.innerHTML = '';
+
+      if (records.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      filtered.forEach((rec, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-800/80 border border-slate-700/70 p-4 rounded-xl flex flex-col justify-between hover:border-amber-500/50 transition shadow-lg relative group";
+        
+        // Title rendering: Make clickable link if URL exists
+        const titleHtml = rec.url 
+          ? `<a href="${rec.url}" target="_blank" rel="noopener noreferrer" class="font-bold text-slate-100 hover:text-amber-400 hover:underline text-base leading-tight inline-flex items-center gap-1.5">
+               ${rec.title} <span class="text-xs text-amber-400/80">&#8599;</span>
+             </a>`
+          : `<h3 class="font-bold text-slate-100 text-base leading-tight">${rec.title}</h3>`;
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <span class="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-semibold border border-amber-500/20">
+                ${rec.format || '12" LP'}
+              </span>
+              <button onclick="deleteRecord(${idx})" class="text-slate-500 hover:text-rose-400 text-xs font-bold transition">
+                &#10005;
+              </button>
+            </div>
+            ${titleHtml}
+            <p class="text-sm text-slate-300 mb-3 mt-1">${rec.artist}</p>
+          </div>
+
+          <div class="border-t border-slate-700/50 pt-2 text-xs text-slate-400 flex flex-wrap justify-between gap-y-1">
+            <span>Year: <strong class="text-slate-200">${rec.year || 'N/A'}</strong></span>
+            <span>Cat #: <strong class="text-slate-200">${rec.catalog || 'N/A'}</strong></span>
+            ${rec.genre ? `<div class="w-full mt-1 text-slate-400 truncate">Genre: ${rec.genre}</div>` : ''}
+            ${rec.url ? `<div class="w-full mt-1"><a href="${rec.url}" target="_blank" rel="noopener noreferrer" class="text-amber-400/80 hover:text-amber-300 hover:underline">View Release Info ↗</a></div>` : ''}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Form Submit Handler (Add / Update)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const newRecord = {
+        id: Date.now(),
+        title: document.getElementById('input-title').value.trim(),
+        artist: document.getElementById('input-artist').value.trim(),
+        format: document.getElementById('input-format').value,
+        year: document.getElementById('input-year').value.trim(),
+        genre: document.getElementById('input-genre').value.trim(),
+        catalog: document.getElementById('input-catalog').value.trim(),
+        url: document.getElementById('input-url').value.trim()
+      };
+
+      records.unshift(newRecord);
+      saveState();
+      form.reset();
+    });
+
+    // Delete Record
+    window.deleteRecord = function(index) {
+      if (confirm("Remove this record from your collection?")) {
+        records.splice(index, 1);
+        saveState();
+      }
+    };
+
+    // Auto-Assist Feature (MusicBrainz Search API)
+    btnAssist.addEventListener('click', async () => {
+      const title = document.getElementById('input-title').value.trim();
+      const artist = document.getElementById('input-artist').value.trim();
+
+      if (!title) {
+        alert("Please enter at least an Album Title to look up metadata.");
+        return;
+      }
+
+      btnAssist.disabled = true;
+      btnAssist.innerHTML = `<span>&#8987;</span> Searching...`;
+
+      try {
+        const query = encodeURIComponent(`release:${title} ${artist ? 'AND artist:' + artist : ''}`);
+        const response = await fetch(`https://musicbrainz.org/ws/2/release/?query=${query}&fmt=json`, {
+          headers: { 'User-Agent': 'VinylVaultApp/1.0.0 ( contact@vinylvault.app )' }
+        });
+
+        const data = await response.json();
+        
+        if (data.releases && data.releases.length > 0) {
+          const match = data.releases[0];
+
+          pendingSuggestion = {
+            title: match.title || title,
+            artist: match['artist-credit'] ? match['artist-credit'][0].name : artist,
+            year: match.date ? match.date.substring(0, 4) : '',
+            format: match.media && match.media[0] && match.media[0].format ? match.media[0].format : '12" LP',
+            catalog: match['label-info'] && match['label-info'][0] ? match['label-info'][0]['catalog-number'] || '' : '',
+            url: match.id ? `https://musicbrainz.org/release/${match.id}` : ''
+          };
+
+          // Populate Confirmation Modal
+          document.getElementById('modal-title').textContent = pendingSuggestion.title;
+          document.getElementById('modal-artist').textContent = pendingSuggestion.artist;
+          document.getElementById('modal-year').textContent = pendingSuggestion.year || 'Unknown';
+          document.getElementById('modal-format').textContent = pendingSuggestion.format;
+          document.getElementById('modal-catalog').textContent = pendingSuggestion.catalog || 'N/A';
+          
+          const modalLink = document.getElementById('modal-link');
+          if (pendingSuggestion.url) {
+            modalLink.href = pendingSuggestion.url;
+            modalLink.classList.remove('hidden');
+          } else {
+            modalLink.classList.add('hidden');
+          }
+
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        } else {
+          alert("No exact metadata match found. You can still fill out details manually.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to connect to metadata service.");
+      } finally {
+        btnAssist.disabled = false;
+        btnAssist.innerHTML = `<span>&#9889;</span> Auto-Fill Data`;
+      }
+    });
+
+    // Confirmation Modal Handlers
+    document.getElementById('btn-modal-cancel').addEventListener('click', () => {
+      pendingSuggestion = null;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+
+    document.getElementById('btn-modal-apply').addEventListener('click', () => {
+      if (pendingSuggestion) {
+        if (pendingSuggestion.title) document.getElementById('input-title').value = pendingSuggestion.title;
+        if (pendingSuggestion.artist) document.getElementById('input-artist').value = pendingSuggestion.artist;
+        if (pendingSuggestion.year) document.getElementById('input-year').value = pendingSuggestion.year;
+        if (pendingSuggestion.catalog) document.getElementById('input-catalog').value = pendingSuggestion.catalog;
+        if (pendingSuggestion.url) document.getElementById('input-url').value = pendingSuggestion.url;
+        
+        // Match format option if available
+        const formatSelect = document.getElementById('input-format');
+        if (pendingSuggestion.format.toLowerCase().includes('7')) {
+          formatSelect.value = '7" Single';
+        } else if (pendingSuggestion.format.toLowerCase().includes('10')) {
+          formatSelect.value = '10" EP';
+        } else {
+          formatSelect.value = '12" LP';
+        }
+      }
+
+      pendingSuggestion = null;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+
+    // Live Search Filter Listener
+    searchFilter.addEventListener('input', renderCollection);
+
+    // Initial Render
+    renderCollection();
+  </script>
+</body>
+</html>
 
